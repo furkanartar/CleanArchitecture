@@ -8,7 +8,9 @@ namespace Application.Features.Brands.Commands.Create
 {
     public class CreatedBrandResponse
     {
+        //brand oluşturduktan sonra hangi verileri response'da göndereceğimizi belirtiyoruz.
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
 }

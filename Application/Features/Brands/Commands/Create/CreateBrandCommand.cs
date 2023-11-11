@@ -1,15 +1,19 @@
-﻿using MediatR;
+﻿using Application.Services.Repositories;
+using AutoMapper;
+using Domain.Entities;
+using MediatR;
 
 namespace Application.Features.Brands.Commands.Create;
 
-public class CreateBrandCommand : IRequest<CreatedBrandResponse>
+public class CreateBrandCommand : IRequest<CreatedBrandResponse> //response nesnemiz CreatedBrandResponse
 {
+    //kullanıcıdan update için hangi dataları alacağımızı belirtiyoruz.
 
     public string Name { get; set; }
 
     /*
-     * Burada olay şu: API'a request gelir handler'a yönlendiririz ve aşağıdaki handler çalışır ve CreateBrandCommad'a request gelir
-     * Response'umuz CreatedBrandResponse'idir.
+     * Kullanıcıdan istediğimiz verileri CreateBrandCommand class'ı içerisinde belirtiriz.
+     * Response yapımız CreatedBrandResponse'idir.
      * 
      * Aşağıdaki class request ve response'u handle etmemizi sağlar.
      * 
@@ -17,14 +21,29 @@ public class CreateBrandCommand : IRequest<CreatedBrandResponse>
      * Ayrı ayrı hiçbir anlamları yok. Tek başlarına bir işe yaramazlar. Harici class oluşturmak yerine buraya yazıyorum o yüzden.
      */
 
-    public class CreateBrandCommandHandler : IRequestHandler<CreateBrandCommand, CreatedBrandResponse>
+    public class CreateBrandCommandHandler : IRequestHandler<CreateBrandCommand, CreatedBrandResponse> //MediatR handler
     {
-        public Task<CreatedBrandResponse>? Handle(CreateBrandCommand request, CancellationToken cancellationToken)
+        private readonly IBrandRepository _brandRepository;
+        private readonly IMapper _mapper;
+
+        public CreateBrandCommandHandler(IBrandRepository brandRepository, IMapper mapper)
         {
-            CreatedBrandResponse createdBrandResponse = new CreatedBrandResponse();
-            createdBrandResponse.Name = request.Name;
-            createdBrandResponse.Id = new Guid();
-            return null;
+            _brandRepository = brandRepository;
+            _mapper = mapper;
+        }
+
+        public async Task<CreatedBrandResponse>? Handle(CreateBrandCommand request, CancellationToken cancellationToken)
+        {
+            //burada gelen request'i doğrudan döndürmüyoruz çünkü hem veri güvenliği için hem de kolonların hepsini dışarı açmamış olabiliriz veya tüm kolon verilerini almıyor olabiliriz (ki böyle olur normalde).
+
+            Brand brand = _mapper.Map<Brand>(request); //kaba işi auto mapper'a bırakıyorum ben detay işi yapıyorum.
+            brand.Id = Guid.NewGuid();
+
+            await _brandRepository.AddAsync(brand);
+
+            CreatedBrandResponse createdBrandResponse = _mapper.Map<CreatedBrandResponse>(brand);
+
+            return createdBrandResponse;
         }
     }
 }

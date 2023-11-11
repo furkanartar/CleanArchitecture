@@ -10,7 +10,8 @@ public static class ApplicationServiceRegistration //Application katmanının IO
     //neyi extend edeceksek onu parametrede this ile geçiyoruz, burada IServiceCollection'ı extend ediyoruz
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        services.AddMediatR(configuration =>
+        services.AddAutoMapper(Assembly.GetExecutingAssembly()); // AutoMapper'i ekledik
+        services.AddMediatR(configuration => //MediatR'ı ekledik
         {
             configuration.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
         });
