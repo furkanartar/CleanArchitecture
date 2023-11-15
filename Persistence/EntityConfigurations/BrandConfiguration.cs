@@ -16,6 +16,10 @@ public class BrandConfiguration : IEntityTypeConfiguration<Brand>
         builder.Property(b => b.UpdatedDate).HasColumnName("UpdatedDate");
         builder.Property(b => b.DeletedDate).HasColumnName("DeletedDate");
 
+        builder.HasIndex(indexExpression: b => b.Name, name: "UK_Brands_Name").IsUnique(); // UniqueKey_Fuels_Name
+
+        builder.HasMany(b => b.Models); // Bire çok ilişki. Markanın birden çok Modeli olabilir
+
         builder.HasQueryFilter(b => !b.DeletedDate.HasValue); // bu noktada Brands tablosu için global filtre uyguluyoruz. Brands tablosu için yazılacak tüm sorgulara DeletedDate verisi yoksa getir şartını ekliyoruz.
     }
 }
