@@ -16,6 +16,7 @@ public static class PersistenceServiceRegistration // her katman kendi bağıml�
         services.AddDbContext<BaseDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("RentACar"))); // sql server bağlantısını sağlıyoruz. connection string WebApi/appsettings.json'dan geliyor
 
         services.AddScoped<IBrandRepository, BrandRepository>(); // biri senden IBrandRepository'i isterse ona BrandRepository'i ver diyoruz.
+        services.AddScoped<IModelRepository, ModelRepository>();
 
         return services;
     }
