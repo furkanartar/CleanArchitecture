@@ -1,4 +1,5 @@
-﻿using Core.Application.Pipelines.Validation;
+﻿using Core.Application.Pipelines.Transaction;
+using Core.Application.Pipelines.Validation;
 using Core.Application.Rules;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +22,7 @@ public static class ApplicationServiceRegistration //Application katmanının IO
             configuration.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
 
             configuration.AddOpenBehavior(typeof(RequestValidationBehavior<,>));//mediatr'ye bir request çalıştıracaksan bu middleware'dan geçir bakalım diyoruz --- validation için
+            configuration.AddOpenBehavior(typeof(TransactionScopeBehavior<,>));//transaction middleware'ını devreye alıyoruz
         });
 
         return services;

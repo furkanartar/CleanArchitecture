@@ -1,12 +1,13 @@
 ﻿using Application.Features.Brands.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
+using Core.Application.Pipelines.Transaction;
 using Domain.Entities;
 using MediatR;
 
 namespace Application.Features.Brands.Commands.Create;
 
-public class CreateBrandCommand : IRequest<CreatedBrandResponse> //response nesnemiz CreatedBrandResponse
+public class CreateBrandCommand : IRequest<CreatedBrandResponse>, ITransactionalRequest //response nesnemiz CreatedBrandResponse, yalnızca ITransactionRequest diyerek süreci transaction'a dahil ediyoruz bu kadar...
 {
     //kullanıcıdan update için hangi dataları alacağımızı belirtiyoruz.
 
@@ -44,7 +45,12 @@ public class CreateBrandCommand : IRequest<CreatedBrandResponse> //response nesn
             Brand brand = _mapper.Map<Brand>(request); //kaba işi auto mapper'a bırakıyorum ben detay işi yapıyorum.
             brand.Id = Guid.NewGuid();
 
+            // Transaction test için aşağıdaki kodu aktif ediyoruz
+            //Brand brand2 = _mapper.Map<Brand>(request); //kaba işi auto mapper'a bırakıyorum ben detay işi yapıyorum.
+            //brand2.Id = Guid.NewGuid();
+
             await _brandRepository.AddAsync(brand);
+            //await _brandRepository.AddAsync(brand2);
 
             CreatedBrandResponse createdBrandResponse = _mapper.Map<CreatedBrandResponse>(brand);
             return createdBrandResponse;
