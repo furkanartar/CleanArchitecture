@@ -1,4 +1,6 @@
-﻿using Core.Application.Rules;
+﻿using Core.Application.Pipelines.Validation;
+using Core.Application.Rules;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -13,9 +15,12 @@ public static class ApplicationServiceRegistration //Application katmanının IO
     {
         services.AddAutoMapper(Assembly.GetExecutingAssembly()); // AutoMapper'i ekledik
         services.AddSubClassesOfType(Assembly.GetExecutingAssembly(), typeof(BaseBusinessRules)); // BaseBusinessRules sınıfından türetilen (inherit edilen) tüm sınıfları scope'a eklemeyi sağlıyor, bu sayede her business sınıfını car, brand, model vs tek tek eklemeyeceğiz.
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly()); //Fleuntvalidation'ı ekledik. Bu core'daki RequestValidationBehavior'a constr'ına validators'ları gönderecek
         services.AddMediatR(configuration => //MediatR'ı ekledik
         {
             configuration.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+
+            configuration.AddOpenBehavior(typeof(RequestValidationBehavior<,>));//mediatr'ye bir request çalıştıracaksan bu middleware'dan geçir bakalım diyoruz --- validation için
         });
 
         return services;
