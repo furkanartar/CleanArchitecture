@@ -23,7 +23,7 @@ if (app.Environment.IsDevelopment())
 }
 
 if (app.Environment.IsProduction()) //bu middleware'in yalnýzca production'da çalýþmasýný istediðimiz için if içerisine ekledik. Çünkü development ortamýnda hatanýn detaylarýný görmek istiyoruz
-    app.ConfigureCustomExceptionMiddleware(); //exception middleware'i sisteme dahil ediyoruz
+    app.ConfigureCustomExceptionMiddleware(); //exception middleware'i sisteme dahil ediyoruz, validation da bu middleware üzerinden çalýþmakta
 
 app.UseHttpsRedirection();
 
