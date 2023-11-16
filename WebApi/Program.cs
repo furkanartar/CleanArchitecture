@@ -1,4 +1,5 @@
 using Application;
+using Core.CrossCuttingConcerns.Exceptions.Extensions;
 using Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+if (app.Environment.IsProduction()) //bu middleware'in yalnýzca production'da çalýþmasýný istediðimiz için if içerisine ekledik. Çünkü development ortamýnda hatanýn detaylarýný görmek istiyoruz
+    app.ConfigureCustomExceptionMiddleware(); //exception middleware'i sisteme dahil ediyoruz
 
 app.UseHttpsRedirection();
 
