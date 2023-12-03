@@ -9,6 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddApplicationServices(); //Application katmanýnýn IOC süreçleri burada iþlenmekte.
 builder.Services.AddPersistenceServices(builder.Configuration); //Persistence katmanýnýn IOC süreçleri burada iþlenmekte.
+
+//builder.Services.AddDistributedMemoryCache(); // InMemory Cache
+builder.Services.AddStackExchangeRedisCache(options => options.Configuration = "localhost:6379"); // Redis Cache (Docker üzerinde)
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -22,8 +26,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-if (app.Environment.IsProduction()) //bu middleware'in yalnýzca production'da çalýþmasýný istediðimiz için if içerisine ekledik. Çünkü development ortamýnda hatanýn detaylarýný görmek istiyoruz
-    app.ConfigureCustomExceptionMiddleware(); //exception middleware'i sisteme dahil ediyoruz, validation da bu middleware üzerinden çalýþmakta
+//if (app.Environment.IsProduction()) //bu middleware'in yalnýzca production'da çalýþmasýný istediðimiz için if içerisine ekledik. Çünkü development ortamýnda hatanýn detaylarýný görmek istiyoruz
+app.ConfigureCustomExceptionMiddleware(); //exception middleware'i sisteme dahil ediyoruz, validation da bu middleware üzerinden çalýþmakta
 
 app.UseHttpsRedirection();
 

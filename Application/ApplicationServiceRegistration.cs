@@ -1,4 +1,5 @@
-﻿using Core.Application.Pipelines.Transaction;
+﻿using Core.Application.Pipelines.Caching;
+using Core.Application.Pipelines.Transaction;
 using Core.Application.Pipelines.Validation;
 using Core.Application.Rules;
 using FluentValidation;
@@ -21,8 +22,11 @@ public static class ApplicationServiceRegistration //Application katmanının IO
         {
             configuration.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
 
-            configuration.AddOpenBehavior(typeof(RequestValidationBehavior<,>));//mediatr'ye bir request çalıştıracaksan bu middleware'dan geçir bakalım diyoruz --- validation için
+            //mediatr'ye bir request çalıştıracaksan aşağıdaki middleware'lardan geçir bakalım diyoruz
+            configuration.AddOpenBehavior(typeof(RequestValidationBehavior<,>));//validation middleware'ını devreye alıyoruz
             configuration.AddOpenBehavior(typeof(TransactionScopeBehavior<,>));//transaction middleware'ını devreye alıyoruz
+            configuration.AddOpenBehavior(typeof(CachingBehavior<,>));//Cache middleware'ını devreye alıyoruz
+            configuration.AddOpenBehavior(typeof(CacheRemovingBehavior<,>));//Cache remover middleware'ını devreye alıyoruz
         });
 
         return services;

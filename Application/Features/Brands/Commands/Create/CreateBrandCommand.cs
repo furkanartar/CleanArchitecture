@@ -1,17 +1,24 @@
 ﻿using Application.Features.Brands.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
+using Core.Application.Pipelines.Caching;
 using Core.Application.Pipelines.Transaction;
 using Domain.Entities;
 using MediatR;
 
 namespace Application.Features.Brands.Commands.Create;
 
-public class CreateBrandCommand : IRequest<CreatedBrandResponse>, ITransactionalRequest //response nesnemiz CreatedBrandResponse, yalnızca ITransactionRequest diyerek süreci transaction'a dahil ediyoruz bu kadar...
+public class CreateBrandCommand : IRequest<CreatedBrandResponse>, ITransactionalRequest, ICacheRemoverRequest //response nesnemiz CreatedBrandResponse, yalnızca ITransactionRequest diyerek süreci transaction'a dahil ediyoruz bu kadar...
 {
     //kullanıcıdan update için hangi dataları alacağımızı belirtiyoruz.
 
     public string Name { get; set; }
+
+    public string CacheKey => "";
+
+    public bool BypassCache => false;
+
+    public string? CacheGroupKey => "GetBrands";
 
     /*
      * Kullanıcıdan istediğimiz verileri CreateBrandCommand class'ı içerisinde belirtiriz.

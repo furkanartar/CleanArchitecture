@@ -1,5 +1,6 @@
 ﻿using Application.Services.Repositories;
 using AutoMapper;
+using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
@@ -8,11 +9,19 @@ using MediatR;
 
 namespace Application.Features.Brands.Queries.GetList;
 
-public class GetListBrandQuery : IRequest<GetListResponse<GetListBrandListItemDto>>
+public class GetListBrandQuery : IRequest<GetListResponse<GetListBrandListItemDto>>, ICachableRequest
 {
     //API'a yapılacak isteği burada oluşturuyoruz, kullanıcıdan neleri istediğimizi burada belirtiyoruz.
 
     public PageRequest PageRequest { get; set; }
+
+    public string CacheKey => $"GetListBrandQuery({PageRequest.PageIndex},{PageRequest.PageSize})"; //burayı bir metot ile dinamik hale getirebiliriz ama geliştiricinin görmesi adına bu şekilde bırakıyorum
+
+    public bool BypassCache { get; }
+
+    public TimeSpan? SlidingExpiration { get; } //varsayılan değeri kullanıyoruz
+
+    public string? CacheGroupKey => "GetBrands";
 
     public class GetListBrandQueryHandler : IRequestHandler<GetListBrandQuery, GetListResponse<GetListBrandListItemDto>> // GetListBrandQuery için çalışacaksın geriye GetListResponse response'unu döneceksin tipinde GetListBrandListItemDto olacak.
     {
