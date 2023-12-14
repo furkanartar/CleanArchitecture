@@ -1,12 +1,14 @@
 ﻿using Application.Services.Repositories;
 using AutoMapper;
 using Core.Application.Pipelines.Caching;
+using Core.Application.Pipelines.Logging;
+using Core.Application.Pipelines.Transaction;
 using Domain.Entities;
 using MediatR;
 
 namespace Application.Features.Brands.Commands.Update;
 
-public class UpdateBrandCommand : IRequest<UpdatedBrandResponse>, ICacheRemoverRequest //response nesnemiz UpdatedBrandResponse
+public class UpdateBrandCommand : IRequest<UpdatedBrandResponse>, ITransactionalRequest, ICacheRemoverRequest, ILoggableRequest //response nesnemiz UpdatedBrandResponse
 {
     //kullanıcıdan update için hangi dataları alacağımızı belirtiyoruz.
     public Guid Id { get; set; }

@@ -1,7 +1,10 @@
 ﻿using Core.Application.Pipelines.Caching;
+using Core.Application.Pipelines.Logging;
 using Core.Application.Pipelines.Transaction;
 using Core.Application.Pipelines.Validation;
 using Core.Application.Rules;
+using Core.CrossCuttingConcerns.SeriLog;
+using Core.CrossCuttingConcerns.SeriLog.Loggers;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -27,7 +30,11 @@ public static class ApplicationServiceRegistration //Application katmanının IO
             configuration.AddOpenBehavior(typeof(TransactionScopeBehavior<,>));//transaction middleware'ını devreye alıyoruz
             configuration.AddOpenBehavior(typeof(CachingBehavior<,>));//Cache middleware'ını devreye alıyoruz
             configuration.AddOpenBehavior(typeof(CacheRemovingBehavior<,>));//Cache remover middleware'ını devreye alıyoruz
+            configuration.AddOpenBehavior(typeof(LoggingBehavior<,>));//logging middleware'ını devreye alıyoruz
         });
+
+        //services.AddSingleton<LoggerServiceBase, FileLogger>(); // Senden LoggerServiceBase istenirse FileLogger ver diyoruz
+        services.AddSingleton<LoggerServiceBase, MsSqlLogger>(); // Senden LoggerServiceBase istenirse MsSqlLogger ver diyoruz
 
         return services;
     }

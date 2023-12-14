@@ -1,4 +1,4 @@
-using Application;
+ï»¿using Application;
 using Core.CrossCuttingConcerns.Exceptions.Extensions;
 using Persistence;
 
@@ -7,11 +7,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddApplicationServices(); //Application katmanının IOC süreçleri burada işlenmekte.
-builder.Services.AddPersistenceServices(builder.Configuration); //Persistence katmanının IOC süreçleri burada işlenmekte.
+builder.Services.AddApplicationServices(); // Application katmanÄ±nÄ±n IOC sÃ¼reÃ§leri burada iÅŸlenecek. Bu sayede Program.cs temiz kalacak.
+builder.Services.AddPersistenceServices(builder.Configuration); // Persistence katmanÄ±nÄ±n IOC sÃ¼reÃ§leri burada iÅŸlenecek.
+builder.Services.AddHttpContextAccessor(); // HttpContextAccessor'Ä± IOC container'a ekliyoruz. BÃ¶ylece her yerde kullanabiliriz.
 
 //builder.Services.AddDistributedMemoryCache(); // InMemory Cache
-builder.Services.AddStackExchangeRedisCache(options => options.Configuration = "localhost:6379"); // Redis Cache (Docker üzerinde)
+builder.Services.AddStackExchangeRedisCache(options => options.Configuration = "localhost:6379"); // Redis Cache (Docker Ã¼zerinde)
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -26,8 +27,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//if (app.Environment.IsProduction()) //bu middleware'in yalnızca production'da çalışmasını istediğimiz için if içerisine ekledik. Çünkü development ortamında hatanın detaylarını görmek istiyoruz
-app.ConfigureCustomExceptionMiddleware(); //exception middleware'i sisteme dahil ediyoruz, validation da bu middleware üzerinden çalışmakta
+if (app.Environment.IsProduction()) // bu middleware'in yalnÄ±zca production'da Ã§alÄ±ÅŸmasÄ±nÄ± istediÄŸimiz iÃ§in if iÃ§erisine ekledik. Ã‡Ã¼nkÃ¼ development ortamÄ±nda detaylarÄ±nÄ± gÃ¶rmek istiyoruz.
+    app.ConfigureCustomExceptionMiddleware();// exception middleware'i sisteme dahil ediyoruz, validation da bu middleware Ã¼zerinden Ã§alÄ±ÅŸmakta
 
 app.UseHttpsRedirection();
 

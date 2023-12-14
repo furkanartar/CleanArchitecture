@@ -1,13 +1,23 @@
 ﻿using Application.Services.Repositories;
 using AutoMapper;
+using Core.Application.Pipelines.Caching;
 using Domain.Entities;
 using MediatR;
 
 namespace Application.Features.Brands.Queries.GetById;
 
-public class GetByIdBrandQuery : IRequest<GetByIdBrandResponse>
+public class GetByIdBrandQuery : IRequest<GetByIdBrandResponse>, ICachableRequest
 {
     public Guid Id { get; set; }
+
+    public string? CacheKey => $"GetByIdBrandQuery({Id})";
+
+    public string? CacheGroupKey => "GetBrands";
+
+    public bool BypassCache { get; } //varsayılan değeri kullanıyoruz
+
+    public TimeSpan? SlidingExpiration { get; } //varsayılan değeri kullanıyoruz
+
 
     public class GetByIdBrandQueryHandler : IRequestHandler<GetByIdBrandQuery, GetByIdBrandResponse> // bu request handler kim için çalışıyor? GetByIdBrandQuery -- response'umuz ne? GetByIdBrandResponse
     {

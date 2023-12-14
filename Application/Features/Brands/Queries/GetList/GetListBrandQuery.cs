@@ -17,11 +17,11 @@ public class GetListBrandQuery : IRequest<GetListResponse<GetListBrandListItemDt
 
     public string CacheKey => $"GetListBrandQuery({PageRequest.PageIndex},{PageRequest.PageSize})"; //burayı bir metot ile dinamik hale getirebiliriz ama geliştiricinin görmesi adına bu şekilde bırakıyorum
 
+    public string? CacheGroupKey => "GetBrands";
+
     public bool BypassCache { get; }
 
     public TimeSpan? SlidingExpiration { get; } //varsayılan değeri kullanıyoruz
-
-    public string? CacheGroupKey => "GetBrands";
 
     public class GetListBrandQueryHandler : IRequestHandler<GetListBrandQuery, GetListResponse<GetListBrandListItemDto>> // GetListBrandQuery için çalışacaksın geriye GetListResponse response'unu döneceksin tipinde GetListBrandListItemDto olacak.
     {

@@ -1,5 +1,6 @@
 ﻿using Application.Services.Repositories;
 using AutoMapper;
+using Core.Application.Pipelines.Caching;
 using Core.Application.Requests;
 using Core.Application.Responses;
 using Core.Persistence.Paging;
@@ -9,9 +10,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Models.Queries.GetList;
 
-public class GetListModelQuery : IRequest<GetListResponse<GetListModelListItemDto>>
+public class GetListModelQuery : IRequest<GetListResponse<GetListModelListItemDto>>, ICachableRequest
 {
     public PageRequest PageRequest { get; set; }
+
+    public string? CacheKey => $"GetListModelQuery({PageRequest.PageIndex},{PageRequest.PageSize})";
+
+    public string? CacheGroupKey => "GetModels";
+
+    public bool BypassCache { get; }
+
+    public TimeSpan? SlidingExpiration { get; }
 
     public class GetListModelQueryHandler : IRequestHandler<GetListModelQuery, GetListResponse<GetListModelListItemDto>>
     {
