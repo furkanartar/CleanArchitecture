@@ -1,1 +1,1 @@
-# RentACar
+# RentACar is Clean Architecture demo.
